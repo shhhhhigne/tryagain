@@ -10,24 +10,31 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    var timer = Timer()
+    var resetTimer = Timer()
+    var getTime = Timer()
+    
+    let counter = CounterClass()
+
+    @IBOutlet weak var counterLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
-        let counter = Counter()
-                
-        while counter.getCount() < 101 {
-            counter.incrementCount()
-            print("#########\(counter.getCount())")
-            if counter.getCount() == 100 {
-                counter.resetCount()
+        
+        timer = Timer.scheduledTimer(timeInterval: 1, target: counter, selector: #selector(counter.incrementCount), userInfo: nil, repeats: true)
+        
+        resetTimer = Timer.scheduledTimer(timeInterval: 100, target: counter, selector: #selector(counter.resetCount), userInfo: nil, repeats: true)
+        
+        getTime = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(ViewController.display), userInfo: nil, repeats: true)
             }
-        }
-        
-
-        
-
+    
+    func display() {
+        let num = counter.getCount()
+        print(num)
+        counterLabel.text = "\(num)"
+        //return num
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,17 +45,18 @@ class ViewController: UIViewController {
 
 }
 
-class Counter {
+class CounterClass {
     var count = 0
-    func getCount() -> Int {
+    @objc func getCount() -> Int {
         return count
     }
     
-    func incrementCount() {
+    @objc func incrementCount() {
         count = count + 1
+        //print("#########\(count)")
     }
     
-    func resetCount() {
+    @objc func resetCount() {
         count = 0
     }
 }
